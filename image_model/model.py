@@ -14,7 +14,7 @@ class IdentityResNet(nn.Module):
             nn.AvgPool2d(kernel_size=4, stride=4),
         )
 
-        self.fc = nn.Linear(512, 10)
+        self.fc = nn.Linear(512, 2)
     
     def forward(self, x):
         return self.fc(self.layers(x).view(-1, 512))

@@ -7,7 +7,7 @@ from PIL import Image
 def preprocess_image(args, filename):
     image_path = os.path.join(args.src_dir, filename)
     image = Image.open(image_path).resize((args.size, args.size))
-    np_data = np.array(image, dtype='uint8')
+    np_data = np.array(image, dtype='uint8').transpose(2, 0, 1)
     np.save(os.path.join(args.dst_dir, f'{filename}.npy'), np_data)
 
 
