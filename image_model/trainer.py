@@ -17,14 +17,16 @@ class ImageModelTrainer:
 
         self.train_batch_size = 8
         self.test_batch_size = 4
-        self.epoch_size = 2
+        self.epoch_size = 50
         self.data_dir = './data/converted'
 
         self.device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 
         self.trainloader, self.testloader = self.get_dataset()
 
-        self.net = IdentityResNet(nblk_stage1=2, nblk_stage2=2, nblk_stage3=2, nblk_stage4=2)
+        self.net = IdentityResNet(image_size=64, labels_count=self.labels.size(),
+                                  nblk_stage1=2, nblk_stage2=2,
+                                  nblk_stage3=2, nblk_stage4=2)
         self.model = self.net.to(self.device)
 
         self.criterion = nn.CrossEntropyLoss()
