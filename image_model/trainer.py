@@ -24,9 +24,7 @@ class ImageModelTrainer:
 
         self.trainloader, self.testloader = self.get_dataset()
 
-        self.net = IdentityResNet(image_size=64, labels_count=self.labels.size(),
-                                  nblk_stage1=2, nblk_stage2=2,
-                                  nblk_stage3=2, nblk_stage4=2)
+        self.net = IdentityResNet(image_size=64, labels_count=self.labels.size())
         self.model = self.net.to(self.device)
 
         self.criterion = nn.CrossEntropyLoss()

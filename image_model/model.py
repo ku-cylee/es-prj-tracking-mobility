@@ -1,21 +1,27 @@
+import math
 import torch.nn as nn
 
 class IdentityResNet(nn.Module):
     
-    def __init__(self, image_size, labels_count, nblk_stage1, nblk_stage2, nblk_stage3, nblk_stage4):
+    def __init__(self, image_size, labels_count, avgpool_size=4):
         super(IdentityResNet, self).__init__()
 
-        self.layers = nn.Sequential(
-            nn.Conv2d(in_channels=3, out_channels=2 * image_size, kernel_size=3, padding=1),
-            ResNetStage(in_channels=2 * image_size, out_channels=2 * image_size, blocks_count=nblk_stage1),
-            ResNetStage(in_channels=2 * image_size, out_channels=4 * image_size, blocks_count=nblk_stage2),
-            ResNetStage(in_channels=4 * image_size, out_channels=8 * image_size, blocks_count=nblk_stage3),
-            ResNetStage(in_channels=8 * image_size, out_channels=16 * image_size, blocks_count=nblk_stage4),
-            ResNetStage(in_channels=16 * image_size, out_channels=32 * image_size, blocks_count=nblk_stage4),
-            nn.AvgPool2d(kernel_size=4, stride=4),
-        )
+        stages_count = int(math.log2(image_size / avgpool_size))
 
-        self.fc = nn.Linear(in_features=32 * image_size, out_features=labels_count)
+        layers = [
+            nn.Conv2d(in_channels=3, out_channels=2 * image_size, kernel_size=3, padding=1),
+            ResNetStage(in_channels=2 * image_size, out_channels=2 * image_size, blocks_count=2),
+        ] + [
+            ResNetStage(in_channels=(2 ** (c + 1)) * image_size,
+                        out_channels=(2 ** (c + 2)) * image_size,
+                        blocks_count=2) for c in range(stages_count)
+        ] + [
+            nn.AvgPool2d(kernel_size=avgpool_size, stride=avgpool_size),
+        ]
+        
+        self.layers = nn.Sequential(*layers)
+        self.fc = nn.Linear(in_features=(2 ** (stages_count + 1)) * image_size,
+                            out_features=labels_count)
     
     def forward(self, input):
         return self.fc(self.layers(input).view(-1, self.fc.in_features))
