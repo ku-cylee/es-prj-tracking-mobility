@@ -1,5 +1,8 @@
-import argparse
+import os
 import time
+import argparse
+import datetime
+
 import torch
 import torchvision.transforms as transforms
 import torch.nn as nn
@@ -15,10 +18,13 @@ class ImageModelTrainer:
     def __init__(self, args):
         print('Trainer Initializing...')
 
+        self.start_time = datetime.datetime.now()
         self.train_batch_size = args.train_batch_size
         self.test_batch_size = args.test_batch_size
         self.epoch_size = args.epoch_size
         self.data_dir = args.data_dir
+        self.is_export = args.is_export
+        self.export_dir = args.export_dir
 
         self.device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
         print(f'  Device: {self.device}')
@@ -114,13 +120,18 @@ class ImageModelTrainer:
 
 
     def export(self):
-        pass
+        if not os.path.exists(self.export_dir):
+            os.mkdir(self.export_dir)
 
+        filename = f'model-{self.start_time.strftime("%y%m%d-%H%M%S")}.pt'
+        torch.save(self.model, os.path.join(self.export_dir, filename))
 
+        
     def run(self):
         self.train()
         self.evaluate()
-        self.export()
+        if self.is_export:
+            self.export()
 
 
 if __name__ == '__main__':
@@ -133,7 +144,8 @@ if __name__ == '__main__':
     parser.add_argument('--train_batch', dest='train_batch_size', type=int, default=8)
     parser.add_argument('--test_batch', dest='test_batch_size', type=int, default=4)
     parser.add_argument('--fold', dest='folds_count', type=int, default=5)
-    parser.add_argument('--export', dest='is_export', type=bool, default=True)
+    parser.add_argument('--export', dest='is_export', type=bool, default=True) # To be fixed
+    parser.add_argument('--export_dir', dest='export_dir', default='./model')
 
     args = parser.parse_args()
     trainer = ImageModelTrainer(args)

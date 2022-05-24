@@ -24,8 +24,11 @@ if __name__ == '__main__':
     parser.add_argument('--src', dest='src_dir', default='./data/raw')
     parser.add_argument('--dst', dest='dst_dir', default='./data/converted')
     parser.add_argument('--size', dest='size', type=int, default=32)
-    parser.add_argument('--rewrite', dest='is_rewrite', type=bool, default=False)
+    parser.add_argument('--rewrite', dest='is_rewrite', type=bool, default=False) # To be fixed
     args = parser.parse_args()
+
+    if not os.path.exists(args.dst_dir):
+        os.mkdir(args.dst_dir)
 
     preprocess_image_filenames = get_image_list(args)
     count = len(preprocess_image_filenames)
