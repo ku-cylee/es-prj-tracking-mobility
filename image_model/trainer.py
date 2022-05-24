@@ -15,20 +15,24 @@ class ImageModelTrainer:
     def __init__(self, args):
         print('Trainer Initializing...')
 
-        self.train_batch_size = 8
-        self.test_batch_size = 4
-        self.epoch_size = 50
-        self.data_dir = './data/converted'
+        self.train_batch_size = args.train_batch_size
+        self.test_batch_size = args.test_batch_size
+        self.epoch_size = args.epoch_size
+        self.data_dir = args.data_dir
 
         self.device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
+        print(f'  Device: {self.device}')
 
         self.trainloader, self.testloader = self.get_dataset()
 
-        self.net = IdentityResNet(image_size=64, labels_count=self.labels.size())
+        self.net = IdentityResNet(image_size=args.image_size,
+                                  labels_count=self.labels.size())
         self.model = self.net.to(self.device)
 
         self.criterion = nn.CrossEntropyLoss()
-        self.optimizer = optim.SGD(self.model.parameters(), lr=1e-2, momentum=.9)
+        self.optimizer = optim.SGD(self.model.parameters(),
+                                   lr=args.learning_rate,
+                                   momentum=args.momentum)
 
 
     def get_dataset(self):
@@ -98,16 +102,14 @@ class ImageModelTrainer:
                 for label, predict in zip(labels, predicts):
                     correct_counts[label] += predict.item()
                     total_counts[label] += 1
-
         print('  Evaluation Report')
-        print(f'    Overall Accurracy: {100 * sum(correct_counts) / sum(total_counts)}%')
 
+        print(f'    Overall Accurracy: {100 * sum(correct_counts) / sum(total_counts)}%')
         for label_idx in range(self.labels.size()):
             correct = correct_counts[label_idx]
             total = total_counts[label_idx]
             percentage = 100 * correct / total
             print(f'    {self.labels.get_name(label_idx)}: {percentage:.4f}% ({correct}/{total})')
-        
         print('Training Evaluating END')
 
 
@@ -123,6 +125,15 @@ class ImageModelTrainer:
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
+    parser.add_argument('--data', dest='data_dir', default='./data/converted')
+    parser.add_argument('--epoch', dest='epoch_size', type=int, default=20)
+    parser.add_argument('--size', dest='image_size', type=int, default=32)
+    parser.add_argument('--lr', dest='learning_rate', type=float, default=1e-2)
+    parser.add_argument('--momentum', dest='momentum', type=float, default=.9)
+    parser.add_argument('--train_batch', dest='train_batch_size', type=int, default=8)
+    parser.add_argument('--test_batch', dest='test_batch_size', type=int, default=4)
+    parser.add_argument('--fold', dest='folds_count', type=int, default=5)
+    parser.add_argument('--export', dest='is_export', type=bool, default=True)
 
     args = parser.parse_args()
     trainer = ImageModelTrainer(args)
