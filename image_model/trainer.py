@@ -10,7 +10,7 @@ import torch.optim as optim
 
 from torch.utils.data import DataLoader
 
-from model import IdentityResNet
+from model import ImageNet
 from dataset import ImageDataset
 
 class ImageModelTrainer:
@@ -31,8 +31,7 @@ class ImageModelTrainer:
 
         self.trainloader, self.testloader = self.get_dataset()
 
-        self.net = IdentityResNet(image_size=args.image_size,
-                                  labels_count=self.labels.size())
+        self.net = ImageNet(labels_count=2)
         self.model = self.net.to(self.device)
 
         self.criterion = nn.CrossEntropyLoss()
@@ -70,7 +69,7 @@ class ImageModelTrainer:
                 local_loss = self.batchwise_train(batch_data)
                 report_loss += local_loss
 
-                if (batch_idx + 1) % 100:
+                if (batch_idx + 1) % 100 and batch_idx + 1 < len(self.trainloader):
                     continue
 
                 current_time = time.time()

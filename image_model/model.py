@@ -1,6 +1,30 @@
 import math
 import torch.nn as nn
 
+class ImageNet(nn.Module):
+
+    # Currently, only available for 32x32
+    def __init__(self, labels_count, stages_count=5):
+        super(ImageNet, self).__init__()
+
+        layers = []
+        for stage_idx in range(stages_count):
+            in_channels = 3 if stage_idx == 0 else 2 ** (stage_idx + 3)
+            out_channels = 2 ** (stage_idx + 4)
+            layers += [
+                nn.Conv2d(in_channels=in_channels, out_channels=out_channels, kernel_size=3, padding=1),
+                nn.ReLU(),
+                nn.MaxPool2d(kernel_size=2, stride=2),
+            ]
+
+        self.layers = nn.Sequential(*layers)
+        self.fc = nn.Linear(in_features=2 ** (stages_count + 3), out_features=labels_count)
+
+
+    def forward(self, input):
+        return self.fc(self.layers(input).view(-1, self.fc.in_features))
+
+
 class IdentityResNet(nn.Module):
     
     def __init__(self, image_size, labels_count, avgpool_size=4):
