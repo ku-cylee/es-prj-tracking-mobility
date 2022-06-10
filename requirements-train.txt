@@ -1,0 +1,5 @@
+matplotlib==3.5.2
+numpy==1.21.2
+Pillow==9.1.1
+-i https://download.pytorch.org/whl/cu115/
+torch==1.11.0+cu115
