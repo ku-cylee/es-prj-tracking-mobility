@@ -13,9 +13,9 @@ class ImageDataset(Dataset):
         self.labels = Labels(labels)
 
         if is_train:
-            data_files = [df for idx, df in enumerate(data_files) if idx % 5 != 0]
+            data_files = [df for idx, df in enumerate(data_files) if idx % 7 != 0]
         else:
-            data_files = [df for idx, df in enumerate(data_files) if idx % 5 == 0]
+            data_files = [df for idx, df in enumerate(data_files) if idx % 7 == 0]
 
         input_tensors = []
         output_tensors = []

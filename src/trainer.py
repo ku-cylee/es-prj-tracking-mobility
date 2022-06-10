@@ -4,13 +4,12 @@ import argparse
 import datetime
 
 import torch
-import torchvision.transforms as transforms
 import torch.nn as nn
 import torch.optim as optim
 
 from torch.utils.data import DataLoader
 
-from model import ImageNet
+from model import IdentityResNet
 from dataset import ImageDataset
 
 class ImageModelTrainer:
@@ -31,7 +30,7 @@ class ImageModelTrainer:
 
         self.trainloader, self.testloader = self.get_dataset()
 
-        self.net = ImageNet(labels_count=2)
+        self.net = IdentityResNet(image_size=32, labels_count=2)
         self.model = self.net.to(self.device)
 
         self.criterion = nn.CrossEntropyLoss()
@@ -41,11 +40,6 @@ class ImageModelTrainer:
 
 
     def get_dataset(self):
-        transform = transforms.Compose([
-            # transforms.ToTensor(),
-            transforms.Normalize((.5, .5, .5), (.5, .5, .5)),
-        ])
-
         trainset = ImageDataset(self.data_dir, is_train=True)
         trainloader = DataLoader(trainset, batch_size=self.train_batch_size, shuffle=True)
 
@@ -142,7 +136,6 @@ if __name__ == '__main__':
     parser.add_argument('--momentum', dest='momentum', type=float, default=.9)
     parser.add_argument('--train_batch', dest='train_batch_size', type=int, default=8)
     parser.add_argument('--test_batch', dest='test_batch_size', type=int, default=4)
-    parser.add_argument('--fold', dest='folds_count', type=int, default=5)
     parser.add_argument('--export', dest='is_export', type=bool, default=True) # To be fixed
     parser.add_argument('--export_dir', dest='export_dir', default='./models')
 
