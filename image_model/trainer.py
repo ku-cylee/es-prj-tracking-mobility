@@ -144,7 +144,7 @@ if __name__ == '__main__':
     parser.add_argument('--test_batch', dest='test_batch_size', type=int, default=4)
     parser.add_argument('--fold', dest='folds_count', type=int, default=5)
     parser.add_argument('--export', dest='is_export', type=bool, default=True) # To be fixed
-    parser.add_argument('--export_dir', dest='export_dir', default='./model')
+    parser.add_argument('--export_dir', dest='export_dir', default='./models')
 
     args = parser.parse_args()
     trainer = ImageModelTrainer(args)
