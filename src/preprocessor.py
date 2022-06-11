@@ -1,7 +1,7 @@
 import os
 import argparse
 
-from internal.image import get_image_list, preprocess_image
+from internal.image import get_image_list, save_image_np
 
 def main(args):
     if not os.path.exists(args.dst_dir):
@@ -12,7 +12,7 @@ def main(args):
     print(f'Preprocessing {count} images START')
     for idx, filename in enumerate(preprocess_image_filenames):
         print(f'  Processing {filename}: ({100 * (idx + 1) / count}%)')
-        preprocess_image(args.src_dir, args.dst_dir, args.size, filename)
+        save_image_np(args.src_dir, args.dst_dir, args.size, filename)
     print(f'Preprocessing {count} images END')
 
 

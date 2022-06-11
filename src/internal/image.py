@@ -1,4 +1,5 @@
 import os
+import torch
 import numpy as np
 
 from PIL import Image
@@ -11,8 +12,18 @@ def get_image_list(src_dir, dst_dir, is_rewrite):
     return target_images
 
 
-def preprocess_image(src_dir, dst_dir, size, filename):
-    image_path = os.path.join(src_dir, filename)
+def get_image_np(image_path, size):
     image = Image.open(image_path).resize((size, size))
-    np_data = np.array(image, dtype='uint8').transpose(2, 0, 1)
-    np.save(os.path.join(dst_dir, f'{filename}.npy'), np_data)
+    return np.array(image, dtype='uint8').transpose(2, 0, 1)
+
+
+def get_image_tensor(dir_path, filename, size):
+    image_path = os.path.join(dir_path, filename)
+    image_np = get_image_np(image_path, size)
+    return image_np, torch.FloatTensor(image_np)
+
+
+def save_image_np(src_dir, dst_dir, size, filename):
+    image_path = os.path.join(src_dir, filename)
+    image_np = get_image_np(image_path, size)
+    np.save(os.path.join(dst_dir, f'{filename}.npy'), image_np)
