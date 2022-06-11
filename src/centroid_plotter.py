@@ -2,7 +2,7 @@ import os
 import argparse
 
 from internal.lib import mkdir_nonexist
-from internal.inference import get_trained_model, get_image_tensor, infer, get_centroid, save_centroid_plot
+from internal.inference import get_trained_model, get_image_tensor, infer, Centroid
 
 def main(src_dir, dst_dir, model_dir, train_size, split_count):
     mkdir_nonexist(dst_dir)
@@ -14,8 +14,8 @@ def main(src_dir, dst_dir, model_dir, train_size, split_count):
         _, sample = get_image_tensor(src_dir, filename, image_size)
         print(f'Inferring {filename}: ({idx + 1}/{len(sample_filenames)})')
         output = infer(model, sample, train_size, split_count)
-        centroid = get_centroid(output, train_size)
-        save_centroid_plot(src_dir, filename, image_size, dst_dir, centroid)
+        centroid = Centroid(output, train_size, split_count)
+        centroid.save_plot(src_dir, dst_dir, filename)
 
 
 if __name__ == '__main__':
