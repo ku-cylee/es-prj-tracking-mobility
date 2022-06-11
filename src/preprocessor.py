@@ -4,15 +4,15 @@ import argparse
 from internal.lib import mkdir_nonexist
 from internal.image import get_image_list, save_image_np
 
-def main(args):
-    mkdir_nonexist(args.dst_dir)
+def main(src_dir, dst_dir, size, is_rewrite):
+    mkdir_nonexist(dst_dir)
 
-    preprocess_image_filenames = get_image_list(args.src_dir, args.dst_dir, args.is_rewrite)
+    preprocess_image_filenames = get_image_list(src_dir, dst_dir, is_rewrite)
     count = len(preprocess_image_filenames)
     print(f'Preprocessing {count} images START')
     for idx, filename in enumerate(preprocess_image_filenames):
         print(f'  Processing {filename}: ({100 * (idx + 1) / count}%)')
-        save_image_np(args.src_dir, args.dst_dir, args.size, filename)
+        save_image_np(src_dir, dst_dir, size, filename)
     print(f'Preprocessing {count} images END')
 
 
@@ -24,6 +24,6 @@ if __name__ == '__main__':
     parser.add_argument('--rewrite', dest='is_rewrite', type=bool, default=False) # To be fixed
     args = parser.parse_args()
 
-    main(args)
+    main(**vars(args))
 else:
     raise ImportError('This module is not for import')

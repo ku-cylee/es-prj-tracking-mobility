@@ -4,18 +4,18 @@ import argparse
 from internal.lib import mkdir_nonexist
 from internal.inference import get_trained_model, get_image_tensor, infer, get_centroid, save_centroid_plot
 
-def main(args):
-    mkdir_nonexist(args.dst_dir)
+def main(src_dir, dst_dir, model_dir, train_size, split_count):
+    mkdir_nonexist(dst_dir)
 
-    model = get_trained_model(args.model_dir)
-    sample_filenames = os.listdir(args.src_dir)
+    model = get_trained_model(model_dir)
+    sample_filenames = os.listdir(src_dir)
     for idx, filename in enumerate(sample_filenames):
-        image_size = args.train_size * args.split_count
-        sample_np, sample = get_image_tensor(args.src_dir, filename, image_size)
+        image_size = train_size * split_count
+        _, sample = get_image_tensor(src_dir, filename, image_size)
         print(f'Inferring {filename}: ({idx + 1}/{len(sample_filenames)})')
-        output = infer(model, sample, args.train_size, args.split_count)
-        centroid = get_centroid(output, args.train_size)
-        save_centroid_plot(args.src_dir, filename, image_size, args.dst_dir, centroid)
+        output = infer(model, sample, train_size, split_count)
+        centroid = get_centroid(output, train_size)
+        save_centroid_plot(src_dir, filename, image_size, dst_dir, centroid)
 
 
 if __name__ == '__main__':
@@ -27,6 +27,6 @@ if __name__ == '__main__':
     parser.add_argument('--split', dest='split_count', type=int, default=4)
     args = parser.parse_args()
 
-    main(args)
+    main(**vars(args))
 else:
     raise ImportError('This module is not for import')
