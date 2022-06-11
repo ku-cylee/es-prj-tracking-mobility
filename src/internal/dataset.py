@@ -44,7 +44,7 @@ class ImageDataset(Dataset):
 class Labels:
 
     def __init__(self, labels_list):
-        self.idx_to_name = labels_list
+        self.idx_to_name = sorted(labels_list)
         self.name_to_idx = {label: idx for idx, label in enumerate(labels_list)}
 
     def get_name(self, index):
