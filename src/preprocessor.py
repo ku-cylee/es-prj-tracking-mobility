@@ -1,11 +1,11 @@
 import os
 import argparse
 
+from internal.lib import mkdir_nonexist
 from internal.image import get_image_list, save_image_np
 
 def main(args):
-    if not os.path.exists(args.dst_dir):
-        os.mkdir(args.dst_dir)
+    mkdir_nonexist(args.dst_dir)
 
     preprocess_image_filenames = get_image_list(args.src_dir, args.dst_dir, args.is_rewrite)
     count = len(preprocess_image_filenames)

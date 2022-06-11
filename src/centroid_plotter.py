@@ -1,11 +1,11 @@
 import os
 import argparse
 
+from internal.lib import mkdir_nonexist
 from internal.inference import get_trained_model, get_image_tensor, infer, get_centroid, save_centroid_plot
 
 def main(args):
-    if not os.path.exists(args.dst_dir):
-        os.mkdir(args.dst_dir)
+    mkdir_nonexist(args.dst_dir)
 
     model = get_trained_model(args.model_dir)
     sample_filenames = os.listdir(args.src_dir)

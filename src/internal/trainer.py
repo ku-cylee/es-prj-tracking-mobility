@@ -8,6 +8,7 @@ import torch.optim as optim
 
 from torch.utils.data import DataLoader
 
+from internal.lib import mkdir_nonexist
 from internal.model import IdentityResNet
 from internal.dataset import ImageDataset
 
@@ -112,8 +113,7 @@ class ImageModelTrainer:
 
 
     def export(self):
-        if not os.path.exists(self.export_dir):
-            os.mkdir(self.export_dir)
+        mkdir_nonexist(self.export_dir)
 
         filename = f'model-{self.start_time.strftime("%y%m%d-%H%M%S")}.pt'
         torch.save(self.model, os.path.join(self.export_dir, filename))
