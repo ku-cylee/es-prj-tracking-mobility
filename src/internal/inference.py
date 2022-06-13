@@ -58,8 +58,8 @@ class Centroid:
         return output[output > .5].shape[0] > 0
 
 
-    def get_vertical_normalized(self, image_size):
-        return self.vertical * 2 / image_size - 1
+    def get_horizontal_normalized(self):
+        return self.horizontal * 2 / self.image_size - 1
 
 
     def save_plot(self, sample_dir, dst_dir, sample_filename):
