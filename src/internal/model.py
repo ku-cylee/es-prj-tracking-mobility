@@ -26,7 +26,7 @@ class ImageNet(nn.Module):
 
 
 class IdentityResNet(nn.Module):
-    
+
     def __init__(self, image_size, labels_count, avgpool_size=4):
         super(IdentityResNet, self).__init__()
 
@@ -42,11 +42,11 @@ class IdentityResNet(nn.Module):
         ] + [
             nn.AvgPool2d(kernel_size=avgpool_size, stride=avgpool_size),
         ]
-        
+
         self.layers = nn.Sequential(*layers)
         self.fc = nn.Linear(in_features=(2 ** (stages_count + 1)) * image_size,
                             out_features=labels_count)
-    
+
     def forward(self, input):
         return self.fc(self.layers(input).view(-1, self.fc.in_features))
 

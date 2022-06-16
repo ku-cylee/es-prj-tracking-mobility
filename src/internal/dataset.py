@@ -8,7 +8,7 @@ class ImageDataset(Dataset):
 
     def __init__(self, data_dir, is_train):
         data_files = os.listdir(data_dir)
-        
+
         labels = list(set(self.get_label_from_filename(filename) for filename in data_files))
         self.labels = Labels(labels)
 

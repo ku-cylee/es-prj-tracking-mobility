@@ -118,7 +118,7 @@ class ImageModelTrainer:
         filename = f'model-{self.start_time.strftime("%y%m%d-%H%M%S")}.pt'
         torch.save(self.model, os.path.join(self.export_dir, filename))
 
-        
+
     def run(self):
         self.train()
         self.evaluate()
