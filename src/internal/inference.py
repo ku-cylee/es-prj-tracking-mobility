@@ -5,8 +5,8 @@ import matplotlib.pyplot as plt
 
 from PIL import Image
 
-def get_trained_model(model_dir):
-    model = torch.load(model_dir, map_location=torch.device('cpu'))
+def get_trained_model(model_path):
+    model = torch.load(model_path, map_location=torch.device('cpu'))
     model.eval()
     return model
 
