@@ -40,8 +40,8 @@ class Centroid:
 
         centroid /= output.sum()
 
-        self.horizontal = centroid[1]
-        self.vertical = centroid[0]
+        self.horizontal = centroid[1].item()
+        self.vertical = centroid[0].item()
 
 
     def object_exists(self, output):
