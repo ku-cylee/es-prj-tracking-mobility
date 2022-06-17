@@ -86,7 +86,7 @@ class Wheel:
         self.pwm.start(0)
 
 
-    def change_direction(self, offset):
+    def set_speed_from_offset(self, offset):
         # offset is positive if car direction and wheel side is same
         # offset is negative if car direction and wheel side is opposite
         # To be implemented
