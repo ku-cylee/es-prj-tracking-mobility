@@ -12,11 +12,9 @@ class CarController:
         self.split_count = split_count
         self.camera = Camera(train_size * split_count)
 
-        GPIO.setmode(GPIO.BCM)
-
-        self.ultrasonic = Ultrasonic()
         self.left_wheel = Wheel(PwmPin.EN_LEFT, WheelPin.IN1_LEFT, WheelPin.IN2_LEFT)
         self.right_wheel = Wheel(PwmPin.EN_RIGHT, WheelPin.IN1_RIGHT, WheelPin.IN2_RIGHT)
+        self.ultrasonic = Ultrasonic(UltrasonicPin.TRIGGER, UltrasonicPin.ECHO)
 
 
     def is_object_close(self):

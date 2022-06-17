@@ -17,9 +17,3 @@ class WheelPin:
 class UltrasonicPin:
     TRIGGER = 23
     ECHO = 24
-
-class Ultrasonic:
-    MAX_DIST = 300
-    MAX_TIMEOUT = (MAX_DIST * 2 * 29.1)
-
-WHEEL_ACCEL_CONST = 5

@@ -6,7 +6,7 @@ import RPi.GPIO as GPIO
 
 from picamera import PiCamera
 
-from internal.car_const import PinIO, UltrasonicPin
+from internal.car_const import PinIO
 
 class Camera(PiCamera):
 
@@ -25,16 +25,56 @@ class Camera(PiCamera):
 
 class Ultrasonic:
 
-    def __init__(self):
-        GPIO.setup(UltrasonicPin.TRIGGER, GPIO.OUT)
-        GPIO.setup(UltrasonicPin.ECHO, GPIO.IN)
-        GPIO.output(UltrasonicPin.TRIGGER, False)
+    def __init__(self, trigger, echo):
+        GPIO.setmode(GPIO.BCM)
+
+        self.trigger = trigger
+        self.echo = echo
+        
+        GPIO.setup(trigger, GPIO.OUT)
+        GPIO.setup(echo, GPIO.IN)
+        GPIO.output(trigger, False)
         time.sleep(1)
+
+        self.max_timeout = 300 * 2 * 29.1 * 1e-6
+
+
+    def get_distance(self):
+        time.sleep(.1)
+        GPIO.output(self.trigger, True)
+        time.sleep(1e-5)
+        GPIO.output(self.trigger, False)
+
+        pulse_start = self.get_time_after_wait(1)
+        pulse_end = self.get_time_after_wait(0, pulse_start)
+
+        distance = self.get_distance_from_duration(pulse_end - pulse_start)
+        return distance
+
+
+    def get_time_after_wait(self, signal, timeout=None):
+        start = time.time()
+        if not timeout:
+            timeout = start
+
+        while GPIO.input(self.echo) != signal:
+            end = time.time()
+            if (end - timeout) >= self.max_timeout:
+                raise TimeoutError()
+
+        return end
+
+
+    def get_distance_from_duration(self, duration):
+        # duration: us / distance: cm
+        return duration * 1e6 / 2 / 29.1
 
 
 class Wheel:
 
     def __init__(self, en, in1, in2):
+        GPIO.setmode(GPIO.BCM)
+        
         self.en = en
         self.in1 = in1
         self.in2 = in2
@@ -52,6 +92,7 @@ class Wheel:
         # To be implemented
         speed = offset
         return self.move_forward(speed)
+
 
     def move_forward(self, speed):
         self.pwm.ChangeDutyCycle(speed)
