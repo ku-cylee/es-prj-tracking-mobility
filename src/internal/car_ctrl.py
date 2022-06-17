@@ -2,14 +2,10 @@ import requests
 
 from internal.car_const import *
 from internal.ext_devices import Camera, Ultrasonic, Wheel
-from internal.inference import Centroid, get_trained_model, infer
 
 class CarController:
 
-    def __init__(self, model_path, train_size, split_count, server_host, server_port):
-        self.model = get_trained_model(model_path)
-        self.train_size = train_size
-        self.split_count = split_count
+    def __init__(self, train_size, split_count, server_host, server_port):
         self.inference_url = f'http://{server_host}:{server_port}/'
 
         self.camera = Camera(train_size * split_count)
