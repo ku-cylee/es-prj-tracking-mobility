@@ -1,5 +1,5 @@
-from internal.ext_devices import Camera, Ultrasonic, Wheel
 from internal.car_const import *
+from internal.ext_devices import Camera, Ultrasonic, Wheel
 from internal.inference import Centroid, get_trained_model, infer
 
 class CarController:

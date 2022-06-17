@@ -17,13 +17,12 @@ def get_image_np(image_path, size):
     return np.array(image, dtype='uint8').transpose(2, 0, 1)
 
 
-def get_image_tensor(dir_path, filename, size):
-    image_path = os.path.join(dir_path, filename)
+def get_image_tensor(image_path, size):
     image_np = get_image_np(image_path, size)
-    return image_np, torch.FloatTensor(image_np)
+    return torch.FloatTensor(image_np)
 
 
 def save_image_np(src_dir, dst_dir, size, filename):
     image_path = os.path.join(src_dir, filename)
     image_np = get_image_np(image_path, size)
-    np.save(os.path.join(dst_dir, f'{filename}.npy'), image_np)
+    return np.save(os.path.join(dst_dir, f'{filename}.npy'), image_np)

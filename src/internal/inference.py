@@ -1,23 +1,13 @@
 import os
 import torch
-import numpy as np
 import matplotlib.pyplot as plt
 
-from PIL import Image
+from internal.image import get_image_np
 
 def get_trained_model(model_path):
     model = torch.load(model_path, map_location=torch.device('cpu'))
     model.eval()
     return model
-
-
-def get_image_tensor(dir_path, filename, size=None):
-    image_path = os.path.join(dir_path, filename)
-    image = Image.open(image_path)
-    if size:
-        image = image.resize((size, size))
-    image_np = np.array(image, dtype='uint8').transpose(2, 0, 1)
-    return image_np, torch.FloatTensor(image_np)
 
 
 def infer(model, image, train_size, split_count):
@@ -63,7 +53,8 @@ class Centroid:
 
 
     def save_plot(self, sample_dir, dst_dir, sample_filename):
-        sample, _ = get_image_tensor(sample_dir, sample_filename, self.image_size)
+        image_path = os.path.join(sample_dir, sample_filename)
+        sample = get_image_np(image_path, self.image_size)
         plt.imshow(sample.transpose((1, 2, 0)), interpolation='nearest')
         if self.exists:
             plt.plot(self.horizontal, self.vertical, 'bo')
