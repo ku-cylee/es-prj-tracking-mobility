@@ -1,5 +1,4 @@
 import time
-import torch
 import numpy as np
 
 import RPi.GPIO as GPIO
@@ -17,10 +16,10 @@ class Camera(PiCamera):
         self.framerate = 24
 
 
-    def capture_tensor(self):
+    def capture_np(self):
         data = np.empty((self.image_size, self.image_size, 3), dtype=np.uint8)
         self.capture(data, 'rgb')
-        return torch.FloatTensor(data.transpose(2, 0, 1))
+        return data.transpose(2, 0, 1)
 
 
 class Ultrasonic:
@@ -30,7 +29,7 @@ class Ultrasonic:
 
         self.trigger = trigger
         self.echo = echo
-        
+
         GPIO.setup(trigger, GPIO.OUT)
         GPIO.setup(echo, GPIO.IN)
         GPIO.output(trigger, False)
@@ -74,7 +73,7 @@ class Wheel:
 
     def __init__(self, en, in1, in2):
         GPIO.setmode(GPIO.BCM)
-        
+
         self.en = en
         self.in1 = in1
         self.in2 = in2

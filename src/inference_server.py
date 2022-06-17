@@ -26,7 +26,7 @@ class InferenceServer(Flask):
 
         return {
             'exists': centroid.exists,
-            'position': centroid.get_horizontal_normalized() if centroid.exists else None,
+            'offset': centroid.get_horizontal_normalized() if centroid.exists else None,
         }
 
 
