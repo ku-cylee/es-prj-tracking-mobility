@@ -97,7 +97,7 @@ $ pip install -r requirements-pi.txt
 
 The accuracy over test dataset after training is:
 * Overall dataset: 97.94%
-* "false" dataset: 97.74% 
+* "false" dataset: 97.74%
 * "true" dataset: 98.11%
 
 ### Inference and Centroid Computation

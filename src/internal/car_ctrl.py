@@ -1,6 +1,5 @@
 import requests
 
-from internal.car_const import *
 from internal.ext_devices import Camera, Wheel
 
 class CarController:

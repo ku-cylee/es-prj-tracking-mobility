@@ -1,4 +1,3 @@
-import os
 import argparse
 
 from internal.lib import mkdir_nonexist
