@@ -9,8 +9,8 @@ class CarController:
         self.inference_url = f'http://{server_host}:{server_port}/'
 
         self.camera = Camera(train_size * split_count)
-        self.left_wheel = Wheel(PwmPin.EN_LEFT, WheelPin.IN1_LEFT, WheelPin.IN2_LEFT)
-        self.right_wheel = Wheel(PwmPin.EN_RIGHT, WheelPin.IN1_RIGHT, WheelPin.IN2_RIGHT)
+        self.left_wheel = Wheel(0, 5, 6)
+        self.right_wheel = Wheel(26, 13, 19)
 
 
     def stop(self):
@@ -19,14 +19,14 @@ class CarController:
 
 
     def change_direction(self, offset):
-        # offset = centroid.get_horizontal_normalized()
         self.left_wheel.set_speed_from_offset(-offset)
-        self.right_wheel.set_speed_from_offset(offset)
+        self.right_wheel.set_speed_from_offset(2 * offset)
 
 
     def run(self):
         image = self.camera.capture_np()
-        centroid = requests.post(self.inference_url, json={'image': image.tolist()}).json()
+        resp = requests.post(self.inference_url, json={'image': image.tolist()})
+        centroid = resp.json()
 
         if not centroid['exists']:
             return self.stop()

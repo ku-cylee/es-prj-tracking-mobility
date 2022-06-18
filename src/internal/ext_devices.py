@@ -40,19 +40,17 @@ class Wheel:
     def set_speed_from_offset(self, offset):
         # offset is positive if car direction and wheel side is same
         # offset is negative if car direction and wheel side is opposite
-        # To be implemented
-        speed = offset
+        speed = 4 * offset + 30
         return self.move_forward(speed)
 
 
     def move_forward(self, speed):
         self.pwm.ChangeDutyCycle(speed)
-        GPIO.output(self.in1, PinIO.HIGH)
-        GPIO.output(self.in2, PinIO.LOW)
+        GPIO.output(self.in1, 1)
+        GPIO.output(self.in2, 0)
 
 
     def stop(self):
-        # Should 0 be assigned for stop?
         self.pwm.ChangeDutyCycle(0)
-        GPIO.output(self.in1, PinIO.LOW)
-        GPIO.output(self.in2, PinIO.LOW)
+        GPIO.output(self.in1, 0)
+        GPIO.output(self.in2, 0)
