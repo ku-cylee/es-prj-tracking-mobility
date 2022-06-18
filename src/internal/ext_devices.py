@@ -1,10 +1,7 @@
 import numpy as np
-
 import RPi.GPIO as GPIO
 
 from picamera import PiCamera
-
-from internal.car_const import PinIO
 
 class Camera(PiCamera):
 
