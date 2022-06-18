@@ -13,7 +13,3 @@ class WheelPin:
     IN2_LEFT = 5
     IN1_RIGHT = 19
     IN2_RIGHT = 13
-
-class UltrasonicPin:
-    TRIGGER = 23
-    ECHO = 24

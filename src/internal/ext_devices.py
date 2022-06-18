@@ -1,4 +1,3 @@
-import time
 import numpy as np
 
 import RPi.GPIO as GPIO
@@ -20,53 +19,6 @@ class Camera(PiCamera):
         data = np.empty((self.image_size, self.image_size, 3), dtype=np.uint8)
         self.capture(data, 'rgb')
         return data.transpose(2, 0, 1)
-
-
-class Ultrasonic:
-
-    def __init__(self, trigger, echo):
-        GPIO.setmode(GPIO.BCM)
-
-        self.trigger = trigger
-        self.echo = echo
-
-        GPIO.setup(trigger, GPIO.OUT)
-        GPIO.setup(echo, GPIO.IN)
-        GPIO.output(trigger, False)
-        time.sleep(1)
-
-        self.max_timeout = 300 * 2 * 29.1 * 1e-6
-
-
-    def get_distance(self):
-        time.sleep(.1)
-        GPIO.output(self.trigger, True)
-        time.sleep(1e-5)
-        GPIO.output(self.trigger, False)
-
-        pulse_start = self.get_time_after_wait(1)
-        pulse_end = self.get_time_after_wait(0, pulse_start)
-
-        distance = self.get_distance_from_duration(pulse_end - pulse_start)
-        return distance
-
-
-    def get_time_after_wait(self, signal, timeout=None):
-        start = time.time()
-        if not timeout:
-            timeout = start
-
-        while GPIO.input(self.echo) != signal:
-            end = time.time()
-            if (end - timeout) >= self.max_timeout:
-                raise TimeoutError()
-
-        return end
-
-
-    def get_distance_from_duration(self, duration):
-        # duration: us / distance: cm
-        return duration * 1e6 / 2 / 29.1
 
 
 class Wheel:

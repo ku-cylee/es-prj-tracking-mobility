@@ -1,7 +1,7 @@
 import requests
 
 from internal.car_const import *
-from internal.ext_devices import Camera, Ultrasonic, Wheel
+from internal.ext_devices import Camera, Wheel
 
 class CarController:
 
@@ -11,16 +11,6 @@ class CarController:
         self.camera = Camera(train_size * split_count)
         self.left_wheel = Wheel(PwmPin.EN_LEFT, WheelPin.IN1_LEFT, WheelPin.IN2_LEFT)
         self.right_wheel = Wheel(PwmPin.EN_RIGHT, WheelPin.IN1_RIGHT, WheelPin.IN2_RIGHT)
-        self.ultrasonic = Ultrasonic(UltrasonicPin.TRIGGER, UltrasonicPin.ECHO)
-
-
-    def is_object_close(self):
-        try:
-            distance = self.ultrasonic.get_distance()
-            # Specify stopping criteria
-            return distance < 1e6
-        except TimeoutError:
-            return False
 
 
     def stop(self):
@@ -35,9 +25,6 @@ class CarController:
 
 
     def run(self):
-        if self.is_object_close():
-            return self.stop()
-
         image = self.camera.capture_np()
         centroid = requests.post(self.inference_url, json={'image': image.tolist()}).json()
 
